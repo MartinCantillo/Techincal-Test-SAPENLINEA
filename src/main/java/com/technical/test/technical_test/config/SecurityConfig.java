@@ -1,6 +1,5 @@
 package com.technical.test.technical_test.config;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -44,20 +43,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-                http
+        http
                 .csrf(AbstractHttpConfigurer::disable)
-                        .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/user/register", "/user/login").permitAll()
-                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers("/api/getAll", "/api/getById").hasAnyRole("User", "Admin")
-                        .requestMatchers("/api/addProduct", "/api/update/**", "/api/delete/**").hasRole("Admin")
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                .requestMatchers("/user/register", "/user/login").permitAll()
+                .requestMatchers("/tasks/by-user/**", "/tasks").hasAnyRole("User", "Admin")
+                .requestMatchers(HttpMethod.POST, "/tasks/addtask").hasAnyRole("User", "Admin")
+                .requestMatchers(HttpMethod.DELETE, "/tasks/**").hasAnyRole("User", "Admin")
+                .requestMatchers(HttpMethod.GET, "/tasks/{id}").hasRole("Admin")
+                .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement -> sessionManagement
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);
-
 
         return http.build();
     }

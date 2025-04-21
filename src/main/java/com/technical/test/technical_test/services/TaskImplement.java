@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.technical.test.technical_test.entity.Task;
+import com.technical.test.technical_test.entity.User;
 import com.technical.test.technical_test.repositories.TaskRepository;
 
 @Service
@@ -14,7 +15,6 @@ public class TaskImplement implements TaskService {
 
     private final TaskRepository taskRepository;
 
-   
     @Autowired
     public TaskImplement(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
@@ -22,31 +22,36 @@ public class TaskImplement implements TaskService {
 
     @Override
     public List<Task> findAll() {
-        return (List<Task>) taskRepository.findAll();  
+        return (List<Task>) taskRepository.findAll();
     }
 
     @Override
     public Optional<Task> findById(Long id) {
-        return taskRepository.findById(id); 
+        return taskRepository.findById(id);
     }
 
     @Override
     public boolean saveTask(Task task) {
         try {
-            taskRepository.save(task);  
+            taskRepository.save(task);
             return true;
         } catch (Exception e) {
-            return false;  
+            return false;
         }
     }
 
     @Override
     public boolean deleteTask(Long id) {
         try {
-            taskRepository.deleteById(id);  
+            taskRepository.deleteById(id);
             return true;
         } catch (Exception e) {
-            return false;  
+            return false;
         }
+    }
+
+    @Override
+    public List<Task> findByOwner(User owner) {
+        return taskRepository.findByOwner(owner);
     }
 }
