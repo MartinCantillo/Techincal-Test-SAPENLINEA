@@ -1,4 +1,4 @@
-package com.technical.test.technical_test.dialect;
+package com.technical.test.technical_test.config.dialect;
 
 import java.sql.Types;
 import java.time.temporal.TemporalAccessor;
