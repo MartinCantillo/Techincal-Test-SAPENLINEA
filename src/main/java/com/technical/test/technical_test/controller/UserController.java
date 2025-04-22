@@ -3,11 +3,13 @@ package com.technical.test.technical_test.controller;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,9 +17,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.technical.test.technical_test.Dtos.AuthenticationRequestDto;
+import com.technical.test.technical_test.Dtos.UserDTO;
 import com.technical.test.technical_test.entity.User;
 import com.technical.test.technical_test.repositories.UserRepository;
 import com.technical.test.technical_test.services.CustomUserDetailsService;
+import com.technical.test.technical_test.services.UserService;
 import com.technical.test.technical_test.utils.JwtUtil;
 
 
@@ -36,13 +40,17 @@ public class UserController {
 
     private final JwtUtil jwtUtil;
 
+    private final UserService userService;
+
+
     @Autowired
-    public UserController(AuthenticationManager authenticationManager, CustomUserDetailsService userDetailsService, UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public UserController(AuthenticationManager authenticationManager, CustomUserDetailsService userDetailsService, UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.userService = userService;
     }
 
     @PostMapping("/register")
@@ -72,4 +80,17 @@ public class UserController {
 
         return jwt;
     }
+
+@PreAuthorize("hasRole('Admin')")
+@GetMapping("/Getall")
+public ResponseEntity<List<UserDTO>> getAllUsers() {
+    List<User> users = userService.findAll();
+    
+    List<UserDTO> userDTOs = users.stream()
+            .map(user -> new UserDTO(user.getId(), user.getUsername(), user.getRole()))
+            .toList();
+
+    return ResponseEntity.ok(userDTOs);
+}
+
 }

@@ -61,6 +61,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/tasks/deleteTask").hasAnyRole("User", "Admin")
                 .requestMatchers(HttpMethod.GET, "/tasks/getTaskById/{id}").hasRole("Admin")
                 .requestMatchers(HttpMethod.GET, "/tasks/updateTask/{id}").hasRole("Admin")
+                .requestMatchers(HttpMethod.GET, "/user/Getall").hasRole("Admin")
                 .anyRequest().authenticated()
             )
             .sessionManagement(sessionManagement -> sessionManagement

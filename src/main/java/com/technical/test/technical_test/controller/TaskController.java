@@ -54,7 +54,7 @@ public class TaskController {
         }
     }
 
-    
+    @PreAuthorize("hasRole('User') or hasRole('Admin')")
     @DeleteMapping("/deleteTask/{id}")
     public ResponseEntity<String> deleteTask(@PathVariable Long id) {
         if (taskService.deleteTask(id)) {
