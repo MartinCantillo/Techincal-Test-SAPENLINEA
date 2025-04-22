@@ -13,5 +13,7 @@ public interface TaskService {
     boolean saveTask(Task user );
     boolean deleteTask(Long id);
     List<Task> findByOwner(User owner);
+    boolean updateTask(Long id, Task updatedTask);
+
 
 }

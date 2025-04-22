@@ -1,8 +1,12 @@
 package com.technical.test.technical_test.entity;
 
 import jakarta.persistence.*;
+
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "users")
 public class User {

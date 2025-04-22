@@ -38,7 +38,7 @@ public class TaskController {
     }
 
     @PreAuthorize("hasRole('Admin')")
-    @GetMapping("/{id}")
+    @GetMapping("/getTaskById/{id}")
     public ResponseEntity<Task> getTaskById(@PathVariable Long id) {
         Optional<Task> task = taskService.findById(id);
         return task.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -55,7 +55,7 @@ public class TaskController {
     }
 
     
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteTask/{id}")
     public ResponseEntity<String> deleteTask(@PathVariable Long id) {
         if (taskService.deleteTask(id)) {
             return ResponseEntity.ok("Tarea eliminada");
@@ -63,5 +63,33 @@ public class TaskController {
             return ResponseEntity.status(500).body("Error al eliminar la tarea");
         }
     }
+
+    @PreAuthorize("hasRole('User') or hasRole('Admin')")
+@PutMapping("/updateTask/{id}")
+public ResponseEntity<String> updateTask(@PathVariable Long id, @RequestBody Task updatedTask) {
+    Optional<Task> existingTaskOpt = taskService.findById(id);
+
+    if (existingTaskOpt.isPresent()) {
+        Task existingTask = existingTaskOpt.get();
+        
+     
+        existingTask.setTitle(updatedTask.getTitle());
+        existingTask.setDescription(updatedTask.getDescription());
+        existingTask.setDueDate(updatedTask.getDueDate());
+        existingTask.setStatus(updatedTask.getStatus());
+        existingTask.setOwner(updatedTask.getOwner());
+
+        boolean updated = taskService.saveTask(existingTask);
+
+        if (updated) {
+            return ResponseEntity.ok("Tarea actualizada correctamente");
+        } else {
+            return ResponseEntity.status(500).body("Error al actualizar la tarea");
+        }
+    } else {
+        return ResponseEntity.status(404).body("Tarea no encontrada");
+    }
+}
+
 }
 

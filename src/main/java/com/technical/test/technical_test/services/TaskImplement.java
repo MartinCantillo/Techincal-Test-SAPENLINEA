@@ -54,4 +54,22 @@ public class TaskImplement implements TaskService {
     public List<Task> findByOwner(User owner) {
         return taskRepository.findByOwner(owner);
     }
+
+    @Override
+public boolean updateTask(Long id, Task updatedTask) {
+    Optional<Task> existingTask = taskRepository.findById(id);
+    if (existingTask.isPresent()) {
+        Task task = existingTask.get();
+        task.setTitle(updatedTask.getTitle());
+        task.setDescription(updatedTask.getDescription());
+        task.setDueDate(updatedTask.getDueDate());
+        task.setStatus(updatedTask.getStatus());
+        task.setOwner(updatedTask.getOwner());
+        taskRepository.save(task);
+        return true;
+    } else {
+        return false;
+    }
+}
+
 }

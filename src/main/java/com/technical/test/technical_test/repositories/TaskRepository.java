@@ -12,4 +12,5 @@ import com.technical.test.technical_test.entity.User;
 public interface TaskRepository extends CrudRepository<Task, Long>  {
 
     List<Task> findByOwner(User owner);
+    
 }

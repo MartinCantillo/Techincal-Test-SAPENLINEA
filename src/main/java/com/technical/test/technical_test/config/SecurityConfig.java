@@ -44,19 +44,29 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                .requestMatchers("/user/register", "/user/login").permitAll()
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+                .requestMatchers(
+                    "/user/register", 
+                    "/user/login", 
+                    "/swagger-ui/**", 
+                    "/swagger-ui.html", 
+                    "/v3/api-docs/**",
+                    "/v3/api-docs",
+                    "/swagger-resources/**",
+                    "/webjars/**"
+                ).permitAll()
                 .requestMatchers("/tasks/by-user/**", "/tasks").hasAnyRole("User", "Admin")
                 .requestMatchers(HttpMethod.POST, "/tasks/addtask").hasAnyRole("User", "Admin")
-                .requestMatchers(HttpMethod.DELETE, "/tasks/**").hasAnyRole("User", "Admin")
-                .requestMatchers(HttpMethod.GET, "/tasks/{id}").hasRole("Admin")
+                .requestMatchers(HttpMethod.DELETE, "/tasks/deleteTask").hasAnyRole("User", "Admin")
+                .requestMatchers(HttpMethod.GET, "/tasks/getTaskById/{id}").hasRole("Admin")
+                .requestMatchers(HttpMethod.GET, "/tasks/updateTask/{id}").hasRole("Admin")
                 .anyRequest().authenticated()
-                )
-                .sessionManagement(sessionManagement -> sessionManagement
+            )
+            .sessionManagement(sessionManagement -> sessionManagement
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);
+            )
+            .addFilterBefore(jwtRequestFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
